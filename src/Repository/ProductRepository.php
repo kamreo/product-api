@@ -19,15 +19,13 @@ class ProductRepository extends ServiceEntityRepository
         parent::__construct($registry, Product::class);
     }
 
-    /*
-    public function findOneBySomeField($value): ?Product
+    public function getOneRecord()
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $this->getEntityManager()
+            ->createQuery(
+                'SELECT  TOP 1 * FROM  product'
+            )
+            ->getResult();
     }
-    */
+
 }
