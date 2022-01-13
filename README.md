@@ -15,6 +15,10 @@ A project for recruitment process
 3. Create database `php bin/console doctrine:database:create`
 4. Generate migration `php bin/console doctrine:migrations:generate`
 5. Run migration `php bin/console doctrine:migrations:migrate`
-6. Run local server `symfony server:start`
+7. Run local server `symfony server:start`
 
 ## API 
+
+## Tests
+Run tests using `php ./vendor/bin/phpunit`
+
