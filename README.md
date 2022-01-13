@@ -19,7 +19,7 @@ A project for recruitment process
 7. Run local server `symfony server:start`
 
 ## API 
-App consists of endpoints for to entities Product and ProductOption
+App consists of endpoints for two entities Product and ProductOption
 
 Product endpoints:
 
