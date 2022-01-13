@@ -147,9 +147,19 @@ class Product implements \JsonSerializable
         return $this;
     }
 
-    public function jsonSerialize()
+    public function jsonSerialize($serializeProductOptions = true)
     {
         $vars = get_object_vars($this);
+        unset($vars['productOptions']);
+        if($serializeProductOptions){
+            $productOptions = array();
+            if($this->getProductOptions()->count()!==0){
+                foreach($this->getProductOptions() as $productOption){
+                    $productOptions[] = $productOption->jsonSerialize();
+                }
+                $vars['productOptions'] = $productOptions;
+            }
+        }
         return $vars;
     }
 }

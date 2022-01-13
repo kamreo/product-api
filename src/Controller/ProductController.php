@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Repository\ProductOptionRepository;
 use App\Repository\ProductRepository;
 use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
@@ -12,7 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProductController extends AbstractController
 {
-    public function getById(string $id, ProductRepository $productRepository): Response{
+    public function getById(string $id, ProductRepository $productRepository): Response
+    {
         $productWithId = $productRepository->findOneBy(['id' => $id]);
         if (!$productWithId) {
             return $this->json('Product with this id doesnt exists!', Response::HTTP_CONFLICT);
@@ -20,11 +22,56 @@ class ProductController extends AbstractController
         return $this->json(json_encode($productWithId->jsonSerialize()), Response::HTTP_OK);
     }
 
-    public function getAll(ProductRepository $productRepository): Response{
-        $products = $productRepository->findAll();
+    public function filter(Request $request, ProductRepository $productRepository, ProductOptionRepository $productOptionRepository): Response
+    {
+        $productType = $request->query->get('productType');
+        $priceFrom = (float)$request->query->get('priceFrom');
+        $priceTo = (float)$request->query->get('priceTo');
+        $sortProperty = $request->query->get('sortProperty');
+        $sortValue = $request->query->get('sortValue');
+
+        $criteria = array();
+        $orderBy = array();
+
+        if ($productType) {
+            $criteria = [
+                'type' => $productType
+            ];
+        }
+
+        if ($sortProperty) {
+            if (!$sortValue) {
+                $orderBy = [
+                    $sortProperty => 'ASC'
+                ];
+            } else {
+                $orderBy = [
+                    $sortProperty => $sortValue
+                ];
+            }
+        }
+
+        $products = $productRepository->findBy($criteria, $orderBy);
+        $productOptions = $productOptionRepository->findBy($criteria, $orderBy);
         $productsArray = array();
-        foreach($products as $product){
-            $productsArray[] = $product->jsonSerialize();
+
+        foreach ($products as $product) {
+            if ($priceFrom && $product->getPrice() < $priceFrom) {
+                continue;
+            }
+            if ($priceTo && $product->getPrice() > $priceTo) {
+                continue;
+            }
+            $productsArray[] = $product->jsonSerialize(false);
+        }
+        foreach ($productOptions as $productOption) {
+            if ($priceFrom && $productOption->getPrice() < $priceFrom) {
+                continue;
+            }
+            if ($priceTo && $productOption->getPrice() > $priceTo) {
+                continue;
+            }
+            $productsArray[] = $productOption->jsonSerialize();
         }
         return $this->json(json_encode($productsArray), Response::HTTP_OK);
     }
@@ -68,8 +115,8 @@ class ProductController extends AbstractController
             $product->setDateCreated($productWithId->getDateCreated());
             $product->setDateModified(new DateTime('NOW'));
             $product->setPrice($data->price ? $data->price : $productWithId->getPrice());
-            $product->setQuantity($data->quantity  ? $data->quantity : $productWithId->getQuantity());
-            $product->setType($data->type  ? $data->type : $productWithId->getType());
+            $product->setQuantity($data->quantity ? $data->quantity : $productWithId->getQuantity());
+            $product->setType($data->type ? $data->type : $productWithId->getType());
 
             $em->persist($product);
             $em->flush();
@@ -93,6 +140,6 @@ class ProductController extends AbstractController
         } catch (\Exception $exception) {
             return $this->json('Couldnt delete product', Response::HTTP_BAD_REQUEST);
         }
-        return $this->json('Updated product successfully', Response::HTTP_OK);
+        return $this->json('Deleted product successfully', Response::HTTP_OK);
     }
 }

@@ -4,7 +4,6 @@
 namespace App\Controller;
 
 
-use App\Entity\Product;
 use App\Entity\ProductOption;
 use App\Repository\ProductOptionRepository;
 use App\Repository\ProductRepository;
@@ -23,7 +22,7 @@ class ProductOptionController extends AbstractController
         $productWithId = $productRepository->findOneBy(['id' => $data->parentId]);
 
         if ($productOptionWithName) {
-            return $this->json('Product with this name already exists!', Response::HTTP_CONFLICT);
+            return $this->json('Product option with this name already exists!', Response::HTTP_CONFLICT);
         }
         if (!$productWithId) {
             return $this->json('Product family with this id doesnt exist!', Response::HTTP_CONFLICT);
@@ -37,13 +36,30 @@ class ProductOptionController extends AbstractController
             $product->setPrice((float)$data->price);
             $product->setQuantity((int)$data->quantity);
             $product->setType($productWithId->getType());
+            $product->setProduct($productWithId);
 
             $em->persist($product);
             $em->flush();
 
         } catch (\Exception $exception) {
-            return $this->json('Couldnt create product', Response::HTTP_BAD_REQUEST);
+            return $this->json('Couldnt create product option', Response::HTTP_BAD_REQUEST);
         }
-        return $this->json('Created product successfully', Response::HTTP_CREATED);
+        return $this->json('Created product option successfully', Response::HTTP_CREATED);
+    }
+
+    public function delete(string $id, ProductOptionRepository $productOptionRepository, EntityManagerInterface $em): Response
+    {
+        $productWithId = $productOptionRepository->findOneBy(['id' => $id]);
+        if (!$productWithId) {
+            return $this->json('Product option with this id doesnt exist!', Response::HTTP_CONFLICT);
+        }
+        try {
+            $em->remove($productWithId);
+            $em->flush();
+
+        } catch (\Exception $exception) {
+            return $this->json('Couldnt delete product option', Response::HTTP_BAD_REQUEST);
+        }
+        return $this->json('Deleted product option successfully', Response::HTTP_OK);
     }
 }

@@ -6,7 +6,7 @@ use App\Repository\ProductOptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductOptionRepository::class)]
-class ProductOption
+class ProductOption implements \JsonSerializable
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -122,5 +122,12 @@ class ProductOption
         $this->product = $product;
 
         return $this;
+    }
+
+    public function jsonSerialize()
+    {
+        $vars = get_object_vars($this);
+        $vars['product'] = $this->getProduct()->getId();
+        return $vars;
     }
 }

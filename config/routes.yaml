@@ -3,9 +3,9 @@ product_get:
     controller: App\Controller\ProductController::getById
     methods: GET
 
-product_get_all:
+product_get_filtered:
     path: /api/product
-    controller: App\Controller\ProductController::getAll
+    controller: App\Controller\ProductController::filter
     methods: GET
 
 product_create:
@@ -18,16 +18,15 @@ product_delete:
     methods: DELETE
     controller: App\Controller\ProductController::delete
 
-product_option_get:
-    path: /api/product_option/{id}
-    controller: App\Controller\ProductOptionController::getById
-    methods: GET
-
 product_option_create:
     path: /api/product_option
     methods: POST
     controller: App\Controller\ProductOptionController::create
 
+product_option_delete:
+    path: /api/product_option/{id}
+    methods: DELETE
+    controller: App\Controller\ProductOptionController::delete
 
 controllers:
     resource: ../src/Controller/
