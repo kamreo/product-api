@@ -28,37 +28,19 @@ product_get - get particular product by id (and its options if there are any)
     controller: App\Controller\ProductController::getById
     methods: GET
     
-product_get_filtered - gets products and product options by specified filters such as productType, priceFrom, priceTo, sortProperty(by what property you want to sort results) and sortValue(ASC or DESC)
-    path: /api/product
-    controller: App\Controller\ProductController::filter
-    methods: GET
+product_get_filtered - gets products and product options by specified filters such as productType, priceFrom, priceTo, sortProperty(by what property you want to sort results) and sortValue(ASC or DESC) | path: /api/product | methods: GET
 
-product_create - creates instance of a product, properties needed are: name, price, quantity and type 
-    path: /api/product
-    methods: POST
-    controller: App\Controller\ProductController::create
+product_create - creates instance of a product, properties needed are: name, price, quantity and type | path: /api/product | methods: POST
 
-product_delete - deletes product by id
-    path: /api/product/{id}
-    methods: DELETE
-    controller: App\Controller\ProductController::delete
+product_delete - deletes product by id| path: /api/product/{id} | methods: DELETE
     
-product_update - updates product resource
-    path: /api/product
-    methods: PUT
-    controller: App\Controller\ProductController::update
+product_update - updates product resource | path: /api/product | methods: PUT
     
 Product option endpoints:
 
-product_option_create - creates product option resource, apart from standard product fields it needs parentId for reference
-    path: /api/product_option
-    methods: POST
-    controller: App\Controller\ProductOptionController::create
+product_option_create - creates product option resource, apart from standard product fields it needs parentId for reference | path: /api/product_option | methods: POST
 
-product_option_delete - deletes product option by id
-    path: /api/product_option/{id}
-    methods: DELETE
-    controller: App\Controller\ProductOptionController::delete
+product_option_delete - deletes product option by id | path: /api/product_option/{id} | methods: DELETE
     
 ## Tests
 Run tests using `php ./vendor/bin/phpunit`
