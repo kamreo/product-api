@@ -1,5 +1,5 @@
 # product-api
-A project for recruitment process
+A project with controllers without usage of api platform
 
 ## Prerequisites
 
